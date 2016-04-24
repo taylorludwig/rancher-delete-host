@@ -9,14 +9,17 @@ class Rancher {
 		this.options = _.extend({
 			hostname: 'rancher-server',
 			port: 8080,
+			ssl: false,
 			accessKey: '',
 			secretKey: ''
 		}, options);
 
 		//Create config object
 		this.config = {
-			rancherUrl: 'http://' + this.options.accessKey + ':' + this.options.secretKey + '@' + this.options.hostname + ':' + this.options.port + '/v1'
+			rancherUrl: (this.options.ssl ? 'https://' : 'http://') + this.options.accessKey + ':' + this.options.secretKey + '@' + this.options.hostname + ':' + this.options.port + '/v1'
 		}
+		
+		console.log('rancherURL: ' + this.config.rancherUrl);
 
 	}
 	

@@ -11,7 +11,8 @@ const rancherServer = new Rancher({
 	hostname: process.env.RANCHER_SERVER_HOSTNAME,
 	port: process.env.RANCHER_SERVER_PORT,
 	accessKey: process.env.RANCHER_SERVER_ACCESS_KEY,
-	secretKey: process.env.RANCHER_SERVER_SECRET_KEY
+	secretKey: process.env.RANCHER_SERVER_SECRET_KEY, 
+	ssl: process.env.RANCHER_SERVER_SSL === "true"
 });
 
 //Setup SQS poll
