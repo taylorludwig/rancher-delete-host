@@ -4,7 +4,7 @@ import sqsConsumer from 'sqs-consumer';
 import Rancher from './util/rancher';
 
 //Configure aws
-const autoscaling = new aws.AutoScaling({ apiVersion: '2011-01-01', region: 'eu-west-1' });
+const autoscaling = new aws.AutoScaling({ apiVersion: '2011-01-01'});
 
 //Configure rancher
 const rancherServer = new Rancher({
