@@ -8,8 +8,8 @@ const autoscaling = new aws.AutoScaling({ apiVersion: '2011-01-01'});
 
 //Configure rancher
 const rancherServer = new Rancher({
-	hostname: 'rancher-server',
-	port: 8080,
+	hostname: process.env.RANCHER_SERVER_HOSTNAME,
+	port: process.env.RANCHER_SERVER_PORT,
 	accessKey: process.env.RANCHER_SERVER_ACCESS_KEY,
 	secretKey: process.env.RANCHER_SERVER_SECRET_KEY
 });
