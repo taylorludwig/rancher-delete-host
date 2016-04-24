@@ -1,0 +1,23 @@
+{
+  "name": "rancher-delete-host",
+  "version": "1.0.0",
+  "description": "Proxy to run the multiple commands required for deleting a rancher host",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start-dev": "cd .. && $(npm bin)/nodemon -L app/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tom Hill <tom@greensheep.io>",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.2.6",
+    "babel": "^5.8.23",
+    "lodash": "^3.10.1",
+    "request": "^2.64.0",
+    "sqs-consumer": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.7.3"
+  }
+}
