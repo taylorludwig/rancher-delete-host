@@ -17,10 +17,25 @@ const rancherServer = new Rancher({
 
 let currentInstanceId;
 let metadata = new aws.MetadataService();
-metadata.request('/latest/meta-data/instance-id', function(err, instanceId) {
-  console.log("Current instance id " + instanceId);
-  currentInstanceId = instanceId;
-});
+
+const maxAttempts = 5;
+const getInstanceId = function(attempts) {
+	console.log("attempting to retrieve instance id of current host");
+	metadata.request('/latest/meta-data/instance-id', function(err, instanceId) {
+		if (err) {
+			attempts += 1;
+			console.log("attempt # ", attempts, " to grab instance id...failed");
+			if (attempts < maxAttempts) {
+				getInstanceId();
+			}
+		} else {
+			console.log("Current instance id " + instanceId);
+			currentInstanceId = instanceId;
+		}
+	});
+}
+
+getInstanceId(0);
 
 //Setup SQS poll
 const consumer = sqsConsumer.create({
@@ -69,7 +84,7 @@ const consumer = sqsConsumer.create({
 
 					// if target to be deleted is current instance Id put back in queue
 					// the instance should never try to delete itself
-					if (hostIds[0] === currentInstanceId) {
+					if (messageBody.EC2InstanceId === currentInstanceId) {
 						console.log('   Trying to delete self: ', hostIds[0]);
 						let selfDeleteError = new Error('Rancher server trying to delete itself');
 						return done(selfDeleteError);
