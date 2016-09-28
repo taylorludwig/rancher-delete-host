@@ -26,7 +26,7 @@ const getInstanceId = function(attempts) {
 			attempts += 1;
 			console.log("attempt # ", attempts, " to grab instance id...failed");
 			if (attempts < maxAttempts) {
-				getInstanceId();
+				getInstanceId(attempts);
 			}
 		} else {
 			console.log("Current instance id " + instanceId);
