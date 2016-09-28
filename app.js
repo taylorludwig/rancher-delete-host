@@ -11,8 +11,15 @@ const rancherServer = new Rancher({
 	hostname: process.env.RANCHER_SERVER_HOSTNAME,
 	port: process.env.RANCHER_SERVER_PORT,
 	accessKey: process.env.RANCHER_SERVER_ACCESS_KEY,
-	secretKey: process.env.RANCHER_SERVER_SECRET_KEY, 
+	secretKey: process.env.RANCHER_SERVER_SECRET_KEY,
 	ssl: process.env.RANCHER_SERVER_SSL === "true"
+});
+
+let currentInstanceId;
+let metadata = new aws.MetadataService();
+metadata.request('/latest/meta-data/instance-id', function(err, instanceId) {
+  console.log("Current instance id " + instanceId);
+  currentInstanceId = instanceId;
 });
 
 //Setup SQS poll
@@ -60,8 +67,15 @@ const consumer = sqsConsumer.create({
 				//the unique EC2 instance id as the HOSTID label.
 				if(hostIds.length > 0) {
 
-					console.log('   Deactivating host: ' + hostIds[0]);
+					// if target to be deleted is current instance Id put back in queue
+					// the instance should never try to delete itself
+					if (hostIds[0] === currentInstanceId) {
+						console.log('   Trying to delete self: ', hostIds[0]);
+						let selfDeleteError = new Error('Rancher server trying to delete itself');
+						return done(selfDeleteError);
+					}
 
+					console.log('   Deactivating host: ' + hostIds[0]);
 					//Deactivate the host
 					rancherServer.deactivateHost(hostIds[0]).catch(errorResponse)
 					.then(() => {
